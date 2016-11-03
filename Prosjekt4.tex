@@ -1,0 +1,124 @@
+% standard LaTeX packages
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=3cm]{geometry}
+\usepackage{parskip}
+\usepackage{xifthen}
+\usepackage{placeins} %Floatbarrier
+\usepackage{graphicx} %package to manage images
+\usepackage{subcaption}
+
+% math packages
+\usepackage{mathtools,amsfonts,amssymb,mathdots}
+\usepackage{siunitx}
+
+\usepackage[rightcaption]{sidecap}
+
+\newcommand{\dd}[1]{\mathrm{d}#1} %numbering
+% plotting and tables
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{caption}
+% other packages
+\usepackage{filecontents}
+
+
+\begin{document}
+
+\title{Prosjekt 4: Faseoverganger i magnetiske systemer }
+\author{Live Wang Jensen}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjonal kvadratisk gitter. Denne modellen beskriver et magnetisk materiale, og vi har forenklet modellen ved å bruke et system som består av partikler, som vi antar er festet i et gitter. Disse partiklene kan enten ha spinn opp eller spinn ned, og kan vekselvirke med hverandre ved å endre spinntilstand. Vi har brukt Metropolis algoritmen for å beregne sannsynlighetstettheten til de ulike tilstandene (?) under en Monte Carlo simulering. Vi har sett på de termodynamiske parameterene, som energi $E$, gjennomsnittsmagnetisering $\mathcal{M}$, spesifikk varmekapasitet $C_V$ og susceptibiliteten $\chi$ som funksjon av temperatur $T$ ved den kritiske temperaturen $T_C$. KONKRETE TALL
+
+\end{abstract}
+
+\tableofcontents
+
+\clearpage
+\section{Introduksjon}
+HVA HAR VI GJORT
+Målet med dette prosjektet er å studere faseoverganger i to dimensjoner ved hjelp av den populære Ising modellen. Ved en gitt kritisk temperatur vil denne modellen vise at vi får en faseovergang fra en magnetisk fase til en fase med null magnetisering.
+bla bla
+
+
+
+\section{Teori}
+Ising modellen gjør oss i stand til å beskrive oppførseen til et magnetisk materiale som funksjon av termisk energi og ytre magnetfelt. Vi antar her at gitteret vårt er kvadratisk og består av et rutenett av atomer, som enten kan ha spinn opp (+1) eller ned (-1). Energien i Ising modellen kan i sin enkleste form beskrives ved 
+\begin{equation}
+E = -J\sum_{<kl>}^N s_ks_l - \mathcal{ B} \sum_k^N s_k
+\end{equation}
+hvor $s_k = \pm 1$. Størrelsen $N$ representerer det totale antlall spinn vi kan ha, mens $J$ er koblingskonstanten som forteller oss noe om styrken på vekselvirkningen mellom to nabospinn. Symbolet $<kl>$ indikerer at vi kun skal summere over de nærmeste naboene. I vårt tilfelle har vi ikke noe ytre magnetfelt $\mathcal{B}$, slik at det siste leddet forsvinner. Vi antar at vi har en ferromagnetisk struktur, slik at $J \>$ 0. Vi kommer til å bruke periodiske grensebetingelser og \textbf{Metropolisalgoritmen} til å modellere vårt system. \\
+
+For et kanonisk system er \textbf{partisjonsfunksjonen} gitt ved
+\begin{equation}
+Z = \sum_{i=1}^M e^{-\beta E_i }
+\end{equation}
+hvor $\beta = 1/kT$, $k$ er Boltzmanns konstant og $E_i$ er energien til tilstand nummer $i$. Her summerer vi over alle mulige mikrotilstander $M$.\\
+I tillegg har vi at magnetiseringen er gitt ved
+\begin{equation}
+\mathcal{M} = \sum_{j=1} ^N s_j
+\end{equation}
+mens den spesifikke varmekapasiteten er
+\begin{equation}
+C_V = \frac{1}{kT^2}\sigma_E^2 = \frac{1}{kT^2}(\langle E^2 \rangle - \langle E \rangle^2 )
+\end{equation}
+Susceptibiliteten er gitt ved
+\begin{equation}
+\chi = \frac{1}{kT} \sigma_{|\mathcal{M}|}^2 = \frac{1}{kT}( \langle \mathcal{|M|}^2 \rangle - \langle |\mathcal{M}| \rangle^2 )
+\end{equation}
+hvor $|\mathcal{M} |$ er absoluttverdien av magnetiseringen $|\mathcal{M} |$.
+
+\subsection{Ising modellen}
+kap 13
+\subsection{Metropolis algoritmen}
+kap 12
+
+
+\section{Løsningsmetoder}
+
+
+\section{Resultater}
+
+
+\section{Diskusjon}
+
+\section{Konklusjon}
+
+\section{Vedlegg}
+Alle koder og resultater som er brukt i rapporten finnes på Github-adressen: \\
+https://github.com/livewj/PROJ3
+
+
+\bibliography{Referanser}
+\begin{thebibliography}{9}  
+
+\bibitem{}
+  Kursets offisielle Github-side $\textit{FYS3150 - Computational Physics}$
+  https://github.com/CompPhysics/ComputationalPhysics,
+  29.10.2016  
+    
+\bibitem{}
+   M. Hjort-Jensen: Computational physics, lecture notes 2015. Fysisk institutt, UiO, 2016.
+
+\bibitem{}
+   Oppgavetekst: Project 4, Fysisk institutt, UiO, 29.10.16
+    
+\bibitem{}
+  Slides fra kursets offisielle nettside
+  "Ordinary differential equations":
+  http://compphysics.github.io/ComputationalPhysics/doc/pub/ode/pdf/ode-beamer.pdf, 21.10.16
+
+
+   
+\end{thebibliography}
+\end{document}
+
+
