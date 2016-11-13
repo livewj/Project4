@@ -1,0 +1,10 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Introduksjon}{2}
+\contentsline {section}{\numberline {2}Teori}{2}
+\contentsline {subsection}{\numberline {2.1}Ising modellen}{2}
+\contentsline {subsection}{\numberline {2.2}Metropolis algoritmen}{3}
+\contentsline {section}{\numberline {3}Resultater}{3}
+\contentsline {subsection}{\numberline {3.1}2x2-gitter}{3}
+\contentsline {section}{\numberline {4}Diskusjon}{3}
+\contentsline {section}{\numberline {5}Konklusjon}{3}
+\contentsline {section}{\numberline {6}Vedlegg}{3}

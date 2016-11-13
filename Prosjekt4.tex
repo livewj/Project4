@@ -51,7 +51,7 @@ bla bla
 
 
 \section{Teori}
-Ising modellen gjør oss i stand til å beskrive oppførseen til et magnetisk materiale som funksjon av termisk energi og ytre magnetfelt. Vi antar her at gitteret vårt er kvadratisk og består av et rutenett av atomer, som enten kan ha spinn opp (+1) eller ned (-1). Energien i Ising modellen kan i sin enkleste form beskrives ved 
+Ising modellen gjør oss i stand til å beskrive oppførselen til et magnetisk materiale som funksjon av termisk energi og ytre magnetfelt. Vi antar her at gitteret vårt er kvadratisk og består av et rutenett av atomer, som enten kan ha spinn opp (+1) eller ned (-1). Energien i Ising modellen kan i sin enkleste form beskrives ved 
 \begin{equation}
 E = -J\sum_{<kl>}^N s_ks_l - \mathcal{ B} \sum_k^N s_k
 \end{equation}
@@ -62,15 +62,15 @@ For et kanonisk system er \textbf{partisjonsfunksjonen} gitt ved
 Z = \sum_{i=1}^M e^{-\beta E_i }
 \end{equation}
 hvor $\beta = 1/kT$, $k$ er Boltzmanns konstant og $E_i$ er energien til tilstand nummer $i$. Her summerer vi over alle mulige mikrotilstander $M$.\\
-I tillegg har vi at magnetiseringen er gitt ved
+I tillegg har vi at \textbf{magnetiseringen} er gitt ved
 \begin{equation}
 \mathcal{M} = \sum_{j=1} ^N s_j
 \end{equation}
-mens den spesifikke varmekapasiteten er
+mens den \textbf{spesifikke varmekapasiteten} er
 \begin{equation}
 C_V = \frac{1}{kT^2}\sigma_E^2 = \frac{1}{kT^2}(\langle E^2 \rangle - \langle E \rangle^2 )
 \end{equation}
-Susceptibiliteten er gitt ved
+\textbf{Susceptibiliteten} er gitt ved
 \begin{equation}
 \chi = \frac{1}{kT} \sigma_{|\mathcal{M}|}^2 = \frac{1}{kT}( \langle \mathcal{|M|}^2 \rangle - \langle |\mathcal{M}| \rangle^2 )
 \end{equation}
@@ -81,14 +81,46 @@ kap 13
 \subsection{Metropolis algoritmen}
 kap 12
 
-
-\section{Løsningsmetoder}
-
-
 \section{Resultater}
+\subsection{2x2-gitter}
+Vi starter med å se på et enkelt todimensjonalt system, nemlig et 2$\times$ 2 gitter. I tabell \ref{num_vs_an} ser vi resultatene fra en kjøring av programmet \texttt{IsingModel$\_$4a.cpp}. Her er temperaturen $T$ = 1.0, og antall Monte Carlo sykluser $10^7$. Med disse verdiene oppnådde vi en presisjon på ett desimal. Her starter vi systemet med alle spinn pekende opp.
+
+\FloatBarrier
+\begin{table}[!ht]
+\centering
+\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi systemet vårt med alle spinn pekende oppover.}
+\label{num_vs_an}
+\begin{tabular}{|l|l|l|}
+\hline
+        & Numerisk & Analytisk \\ \hline
+$<E>$   & -7.9842  & -7.9839   \\ \hline
+$<|M|>$ & 3.9948   & 3.9946    \\ \hline
+$C_V$   & 0.1258   & 0.1283    \\ \hline
+$\chi$  & 0.0157   & 0.0160    \\ \hline
+\end{tabular}
+\end{table}
+\FloatBarrier
+
+\FloatBarrier
+\begin{table}[!ht]
+\centering
+\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi med et system hvor de ulike spinnene peker i tilfeldig retning, enten opp eller ned.}
+\label{num_vs_an2}
+\begin{tabular}{|l|l|l|}
+\hline
+        & Numerisk & Analytisk \\ \hline
+$<E>$   & -7.9836  & -7.9839   \\ \hline
+$<|M|>$ & 4.0148   & 3.9946    \\ \hline
+$C_V$   & 0.1306   & 0.1283    \\ \hline
+$\chi$  & 1.0107   & 0.0160    \\ \hline
+\end{tabular}
+\end{table}
+\FloatBarrier
+
 
 
 \section{Diskusjon}
+Dersom vi sammenligner de numeriske verdiene i tabell \ref{num_vs_an} og \ref{num_vs_an}, ser vi at når vi starter med et ordnet system hvor alle spinn peker opp, vil vi også komme nærmere de analytiske verdiene., jo lenger unna det analytiske svaret kommer vi. 
 
 \section{Konklusjon}
 
