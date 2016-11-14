@@ -9,8 +9,11 @@
    Run as
    ./executable Outputfile numberof spins number of MC cycles initial temp final temp tempstep
    ./test.x Lattice 100 10000000 2.1 2.4 0.01
-   Compile and link as 
+   Compile and link as (using clang)
    c++ -O3 -std=c++11 -Rpass=loop-vectorize -o Ising.x IsingModel.cpp -larmadillo
+
+   NON PARALELLIZED VERSION.
+
 */
 
 #include <cmath>
@@ -145,7 +148,8 @@ void MetropolisSampling(int NSpins, int MCcycles, double Temperature, vec &Expec
     ExpectationValues(3) += MagneticMoment*MagneticMoment; 
     ExpectationValues(4) += fabs(MagneticMoment);
   }
-//Numeric values for L=2
+/*
+//Thermodynamical variables
 double norm = 1.0/((double) (MCcycles));  // divided by  number of cycles 
 double E_ExpectationValues = ExpectationValues(0)*norm;
 double E2_ExpectationValues = ExpectationValues(1)*norm;
@@ -155,7 +159,7 @@ double Mabs_ExpectationValues = ExpectationValues(4)*norm;
 // all expectation values are per spin, divide by 1/NSpins/NSpins
 double Evariance = (E2_ExpectationValues- E_ExpectationValues*E_ExpectationValues)/NSpins/NSpins;
 double Mvariance = (M2_ExpectationValues - Mabs_ExpectationValues*Mabs_ExpectationValues)/NSpins/NSpins;
-
+*/
 } // end of Metropolis sampling over spins
 
 
