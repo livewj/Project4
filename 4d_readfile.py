@@ -37,12 +37,12 @@ def read(filename):
 
 	return T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted
 
-T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted = read('4dT120')
+T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted = read('helpme4dT1')
 T2, E_mean_NN2, E_var_TT2, M_mean_NN2, M_var_T2, M_abs_mean_NN2, MCcycle2, Accepted2 = read('4dT2420')
 
 
-#E_relevant = E_mean_NN[19:] #after the steady state situation has been reached
-E_relevant = E_mean_NN2[38:] #after the steady state situation has been reached
+E_relevant = E_mean_NN[19:] #after the steady state situation has been reached
+#E_relevant = E_mean_NN2[38:] #after the steady state situation has been reached
 
 E_variance = 0.023237777;
 E_variance2 = 1.4091419;

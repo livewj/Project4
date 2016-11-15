@@ -1,6 +1,4 @@
 import numpy as np
-from scipy.stats import norm
-import matplotlib.mlab as mlab
 
 def read(filename):
 	#function that reads the x and y coordinate
@@ -76,7 +74,7 @@ plt.plot(T40, f1(T40)/max(f1(T40))*max(Cv40), T60, f2(T60)/max(f2(T60))*max(Cv60
 
 #plt.plot(T40, Cv40, T60, Cv60, T100, Cv100, T140, Cv140)
 plt.rcParams.update({'font.size': 14})
-plt.legend(['L=40', 'L=60','L=100','L=140'])
+plt.legend(['L=40', 'L=60','L=100','L=140'], loc=2)
 plt.xlabel('Temperature [kT/J]')
 plt.ylabel('$C_V$')
 plt.show()
@@ -86,12 +84,12 @@ f1 = UnivariateSpline(T40, X40)
 f2 = UnivariateSpline(T60, X60)
 f3 = UnivariateSpline(T100, X100)
 f4 = UnivariateSpline(T140, X140)
-f4.set_smoothing_factor(5)
+
 plt.plot(T40, f1(T40)/max(f1(T40))*max(X40),  T60, f2(T60)/max(f2(T60))*max(X60), T100, f3(T100)/max(f3(T100))*max(X100), T140, f4(T140)/max(f4(T140))*max(X140))
 
 #plt.plot(T40, X40, T60, X60, T100, X100, T140, X140)
 plt.rcParams.update({'font.size': 14})
-plt.legend(['L=40', 'L=60','L=100','L=140'])
+plt.legend(['L=40', 'L=60','L=100','L=140'], loc=2)
 plt.xlabel('Temperature [kT/J]')
 plt.ylabel('$\chi(T)$')
 plt.show()

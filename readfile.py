@@ -37,7 +37,7 @@ def read(filename):
 
 	return T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted
 
-T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted = read('4crandomAcceptvsT20')
+T, E_mean_NN, E_var_TT, M_mean_NN, M_var_T, M_abs_mean_NN, MCcycle, Accepted = read('helpme4cT1up')
 
 
 import matplotlib.pyplot as plt
@@ -62,7 +62,7 @@ plt.draw()
 plt.xlabel('Monte Carlo cycles')
 plt.ylabel('<|M|>')
 plt.show()
-
+'''
 #4c accepted moves as funtion of MCC  (file 1lattice20 (when T=1))
 plt.plot((MCcycle), Accepted)
 plt.rcParams.update({'font.size': 14})
@@ -79,4 +79,4 @@ plt.plot(T, Accepted)
 plt.xlabel('Temperature, [kT/J]')
 plt.ylabel('Accepted moves')
 plt.show()
-
+'''

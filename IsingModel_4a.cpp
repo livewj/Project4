@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   double Z_exact = 2*exp(8.) + 2*exp(-8.) + 12; //partition function
   double E_mean_exact = (2*(-8)*exp(8.) + 2*8*exp(-8))/Z_exact; 
   double E_mean_sq_exact = (2*64*exp(8) + 2*64*exp(-8))/Z_exact;
-  double M_mean_exact = 2.*(4*exp(8) + 8.)/Z_exact;
+  double M_mean_exact = (8*exp(8) + 16.)/Z_exact;
   double M_mean_sq_exact = (32*exp(8) + 32)/Z_exact;
   double sigmaE_sq = (E_mean_sq_exact - E_mean_exact*E_mean_exact);  //Standard deviations
   double sigmaM_sq = (M_mean_sq_exact - M_mean_exact*M_mean_exact);
@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
   double chi_exact = sigmaM_sq/T;
 
   cout << MCcycles << endl;
-  cout<<"Exact <E> = " <<setprecision(15) <<E_mean_exact << endl;
-  cout<<"Exact <|M|> = " <<setprecision(15) <<M_mean_exact << endl;
+  cout<<"Exact <E> = " <<setprecision(15) <<E_mean_exact/NSpins/NSpins << endl;
+  cout<<"Exact <|M|> = " <<setprecision(15) <<M_mean_exact/NSpins/NSpins << endl;
   cout << "Exact Cv = " << setprecision(15) << Cv_exact << endl;
   cout << "Exact chi = " << setprecision(15) << chi_exact << endl; 
   
@@ -149,13 +149,13 @@ double M_ExpectationValues = ExpectationValues(2)*norm;
 double M2_ExpectationValues = ExpectationValues(3)*norm;
 double Mabs_ExpectationValues = ExpectationValues(4)*norm;
 // all expectation values are per spin, divide by 1/NSpins/NSpins
-double Evariance = (E2_ExpectationValues- E_ExpectationValues*E_ExpectationValues);///NSpins/NSpins;
-double Mvariance = (M2_ExpectationValues - Mabs_ExpectationValues*Mabs_ExpectationValues);///NSpins/NSpins;
+double Evariance = (E2_ExpectationValues- E_ExpectationValues*E_ExpectationValues);//NSpins/NSpins;
+double Mvariance = (M2_ExpectationValues - Mabs_ExpectationValues*Mabs_ExpectationValues);//NSpins/NSpins;
 
 double T = 1.0;
 
-cout <<"Numeric <E> = " << setprecision(15) << E_ExpectationValues << endl;///NSpins/NSpins << endl;
-cout<<"Numeric <|M|> = " <<setprecision(15) << Mabs_ExpectationValues << endl; ///NSpins/NSpins << endl;
+cout <<"Numeric <E> = " << setprecision(15) << E_ExpectationValues/NSpins/NSpins << endl;
+cout<<"Numeric <|M|> = " <<setprecision(15) << Mabs_ExpectationValues/NSpins/NSpins << endl;
 cout <<"Numeric Cv = " << setprecision(15) << Evariance/T/T << endl;
 cout << "Numeric chi = " << setprecision(15) << Mvariance/T << endl;
 
@@ -175,8 +175,8 @@ void InitializeLattice(int NSpins, mat &SpinMatrix,  double& Energy, double& Mag
       MagneticMoment +=  (double) SpinMatrix(x,y);
     }
   }
-*/
 
+*/
   //Comment/uncomment this section 
   //setup spin matrix and initial magnetization: RANDOM ORIENTATION
   for (int x =0; x < NSpins; x++) {
@@ -187,6 +187,7 @@ void InitializeLattice(int NSpins, mat &SpinMatrix,  double& Energy, double& Mag
        MagneticMoment += SpinMatrix(x,y);}
        else{
        SpinMatrix(x,y) = 1; 
+       MagneticMoment += SpinMatrix(x,y);
        }
      }
   }
