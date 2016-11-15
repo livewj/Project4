@@ -138,7 +138,7 @@ hvor
 hvor $|M |$ er absoluttverdien av det magnetiske momentet $M$.
 
 \subsection{Faseoverganger}
-Nær den kritiske temperaturen $T_C$ kan vi beskrive mange av de termodynamiske størrelsene ved hjelp av en såkale potenslov. Dette er en egenskap som innebærer at frekvensen av en størrelses verdi er eksponensiell avtagende med den gjeldende verdien. For Ising modellen kan forventningsverdien til det magnetiske momentet beskvrives ved
+Nær den kritiske temperaturen $T_C$ kan vi beskrive mange av de termodynamiske størrelsene ved hjelp av en såkalt potenslov. Dette er en egenskap som innebærer at frekvensen av en størrelses verdi er eksponensiell avtagende med den gjeldende verdien. For Ising modellen kan forventningsverdien til det magnetiske momentet beskvrives ved
 
 \[ \langle M(T) \rangle \sim (T - T_C)^\beta \]
 
@@ -166,13 +166,31 @@ og
 \[ \chi (T) \sim |T_C - T|^{-\alpha} \rightarrow L^{\gamma / \mu } \]
 
 \subsection{Metropolis algoritmen}
-Vi skal bruke Metropolis algoritmen til å simulere spinn-flippingen i vårt system. Kort fortalt går den ut på at vi
+For å beregne disse termodynamiske størrelsene på en datamaskin, skal vi bruke Metropolis algoritmen på Ising modellen med periodiske grensebetingelser. Denne algoritmen ble lagt frem av Metropolis mfl. i 1953. Vi kan generere nye tilstander fra den forrige tilstanden ved å bruke en sannsynlighetsmodell som avhenger av energidifferansen mellom tilstandene. I vårt tilfelle er Monte Carlo samplings-funksjonen vår det sammen som sannsynligheten for at systemet befinner seg i en tilstand $s$ gitt ved 
+
+\[P_s = \frac{e^{-\beta E_s}}{Z} \]
+hvor $Z$ er partisjonsfunksjonen for vårt kanoniske ensemble
+
+\[Z(\beta) = \sum_s e^{\beta E_s}  \]
+
+Siden vi trenger en oversikt over \textit{alle} tilstandene systemet kan ha for å kunne beregne partisjonsfunksjonen, sier det seg selv at dette vil være en tung og tidkrevende prosess. En Ising modell med $N=L\times L$ antall spinn i to dimensjoner, vil ha $2^N$ ulike konfigurasjoner. I Metropolis algoritmen slipper vi heldigvis unna dette, siden vi kun ser på \textit{forholdet} mellom sannsynlighetene. Kort fortalt går Metropolis algoritmen ut på at vi
+
+\begin{enumerate}
+\item Starter med en initaltilstand med energi $E_1$. Denne startkonfigurasjonen av spinn kan for eksempel ha alle spinnene pekende oppover, eller helt tilfeldig.
+\item Endre starttilstanden ved å flippe kun ett spinn, og beregn den nye energien $E_2$.
+\item Dersom differansen $\Delta E = E_2 - E_1 \le 0 $, aksepterer vi den nye konfigurasjonen. Energien er nå lavere enn det den startet med å være. På denne måten beveger vi oss mot et energiminimum.
+\item Dersom differansen $\Delta E > 0$, beregn $w = e^{\beta \Delta E} $, og sammenlign $w$ med et tilfeldig trukket tall, $r$.
+\item Hvis $r \le w$ godtas den nye konfigurasjonen. Hvis ikke beholdes den gamle konfigurasjonen. 
+\item Oppdater de termodynamiske verdiene du vil beregne.
+\item Når du har gått gjennom hele gitteret har du gått gjennom én Monte Carlo syklus. En slik syklus regnes som én måling. For å få flere målinger må du gå gjennom flere slike sykluser.
+\end{enumerate}
 
 
 \section{Resultater}
 \subsection{2x2-gitter}
 \textbf{Analytiske løsninger}\\
-Vi starter med å se på et enkelt todimensjonalt system, nemlig et 2$\times$ 2 gitter. Partisjonsfunksjonen for et 2$\times$2-gitter kan finnes ved ligning (3). Dersom vi bruker verdiene gitt i tabell \ref{degen}, får vi at 
+Vi starter med å se på et enkelt todimensjonalt system, nemlig et 2$\times$ 2 gitter. Partisjonsfunksjonen for et 2$\times$2-gitter kan finnes ved ligning (3). Dersom vi bruker verdiene gitt i tabell \ref{degen}, ser vi at vi kun har tre ulike energier; to konfigurasjoner har E = -8J, tolv konfigurasjoner har E = 0 og to konfigurasjoner med E = 8J. Setter vi dette inn i ligningen får vi at 
+
 \[ Z = \sum_{i=1}^{16} e^{-\beta E_i} = e^{-\beta(-8J)} + 2e^{-\beta(8J)} + e^{- \beta(-8J)} + 12e^{-\beta(0)} \]
 \[ = 2e^{8\beta J} + 2e^{-8 \beta J} + 12  \]
 
@@ -181,7 +199,8 @@ Videre kan vi finne $\langle E \rangle$ ved å bruke ligning (6), slik at
 \[\langle E \rangle = - \frac{\partial}{\partial \beta} \left[ ln(2e^{8\beta J} + 2e^{-8 \beta J} + 12) \right] \]
 \[ = - \frac{16Je^{8\beta J} - 16Je^{-8\beta J}}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } \]
 
-Ligning (7) brukes til å finne forventningsverdien til systemets magnetiske moment $\langle |M| \rangle$ og vi får
+Vi vet fra tabell \ref{degen} at vi har én konfigrasjon med $M$ = 4, én med $M$ = -4, fire med $M$ = 2, fire med $M$ = -2 og seks konfigurasjoner med $M$ = 0. Vi bruker ligning (7) til å finne forventningsverdien til systemets magnetiske moment $\langle |M| \rangle$. Dette gir oss
+
 \[ \langle |M| \rangle  = \frac{1}{2e^{8\beta J} + 2e^{-8 \beta J} + 12} \cdot (4e^{-\beta(-8J)} + 4\cdot 2 \cdot e^0 + 4\cdot 2 \cdot e^0 + | - 4|e^{-\beta(-8J)} )\]
 \[ = \frac{8e^{8\beta J} + 16}{2e^{8\beta J} + 2e^{-8 \beta J} + 12} \]
 
@@ -192,14 +211,13 @@ Til slutt har vi susceptibiliteten gitt ved ligning (10)
 \[ \chi = \frac{1}{kT} (\langle |M|^2 \rangle - \langle |M| \rangle ^2 ) = \frac{1}{kT} \left[ \frac{32e^{8\beta J} + 32}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } - \left( \frac{8e^{8\beta J} + 16}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } \right)^2 \right]  \]
 
 \textbf{Numeriske løsninger}\\
-
- I tabell \ref{num_vs_an} ser vi resultatene fra en kjøring av programmet \texttt{IsingModel$\_$4a.cpp}. Her er temperaturen $T$ = 1.0, og antall Monte Carlo sykluser $10^7$. Med disse verdiene oppnådde vi en presisjon på ett desimal. Her starter vi systemet med alle spinn pekende opp.
+Vi kan sammenligne de analytiske løsningene med de numeriske løsningene funnet ved hjelp av Metropolis algoritmen. I koden \texttt{IsingModel$\_$4a.cpp} har Ising modellen blitt implementert sammen med de analytiske uttrykkene, slik at vi enkelt kan beregne $\langle E \rangle$, $\langle |M| \rangle$, $C_V$ og $\chi$. I koden er det brukt periodiske grensebetingelser med $L$ = 2, $J$ = 1 og $T$ = 1.0 (med enheten $kT/J$). I tabell \ref{num_vs_an} ser vi resultatene fra en kjøring av programmet. Her er antall Monte Carlo sykluser satt til $10^7$. Med disse verdiene oppnådde vi en presisjon på ett desimal. Vi ser på to ulike initialkonfigurasjoner, en hvor alle spinn starter med å peke oppover, og en hvor hvert spinn peker tilfeldig opp eller ned.
 
 \FloatBarrier
 \begin{table}[!ht]
 \centering
-\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi systemet vårt med alle spinn pekende oppover.}
-\label{num_vs_an}
+\caption{Numeriske vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi systemet vårt med alle spinn pekende oppover og antall Monte Carlo sykluser er $10^7$.}
+\label{num_vs_an_up}
 \begin{tabular}{|l|l|l|}
 \hline
         & Numerisk & Analytisk \\ \hline
@@ -214,8 +232,8 @@ $\chi$  & 0.0157   & 0.0160    \\ \hline
 \FloatBarrier
 \begin{table}[!ht]
 \centering
-\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi med et system hvor de ulike spinnene peker i tilfeldig retning, enten opp eller ned.}
-\label{num_vs_an2}
+\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi med et system hvor de ulike spinnene peker i tilfeldig retning. Antall Monte Carlo sykluser er $10^7$.}
+\label{num_vs_an_rand}
 \begin{tabular}{|l|l|l|}
 \hline
         & Numerisk & Analytisk \\ \hline
@@ -230,6 +248,11 @@ $\chi$  & 1.0107   & 0.0160    \\ \hline
 
 
 \section{Diskusjon}
+I tabellene \ref{num_vs_an_up} og \ref{num_vs_an_rand} for 2$\times$2 tilfellet ser vi at de numerisk beregnede verdiene stemmer godt overens med de analytiske løsningene. 
+$\chi$ var den verdien som krevde flest Monte Carlo sykluser. 
+
+
+
 \subsection{Optimalisering av kode}
 -O3 ved kompilering. 
 Vektorisering ved -Rpass=loop-vectorize
