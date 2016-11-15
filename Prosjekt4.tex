@@ -36,7 +36,7 @@
 \maketitle
 
 \begin{abstract}
-Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjonal kvadratisk gitter. Denne modellen beskriver et magnetisk materiale, og vi har forenklet modellen ved å bruke et system som består av partikler, som vi antar er festet i et gitter. Disse partiklene kan enten ha spinn opp eller spinn ned, og kan vekselvirke med hverandre ved å endre spinntilstand. Vi har brukt Metropolis algoritmen for å beregne sannsynlighetstettheten til de ulike tilstandene (?) under en Monte Carlo simulering. Vi har sett på de termodynamiske parameterene, som energi $E$, magnetisk moment $M$, spesifikk varmekapasitet $C_V$ og susceptibiliteten $\chi$ som funksjon av temperatur $T$ ved den kritiske temperaturen $T_C$. KONKRETE TALL
+Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjonal kvadratisk gitter. Denne modellen beskriver et magnetisk materiale, og vi har forenklet modellen ved å bruke et system som består av partikler, som vi antar er festet i et gitter. Disse partiklene kan enten ha spinn opp eller spinn ned, og kan vekselvirke med hverandre ved å endre spinntilstand. Vi har brukt Metropolis algoritmen for å beregne sannsynlighetstettheten til de ulike energitilstandene ved Monte Carlo simulering. For et 2$\times$2 system fant vi ut at vi trengte $10^5$ Monte Carlo sykluser før vi fikk overensstemmelse mellom analytiske og numeriske verdier. Vi har sett på de termodynamiske størrelsene energi $\langle E \rangle$, magnetisk moment $\langle |M| \rangle$, spesifikk varmekapasitet $C_V$ og susceptibiliteten $\chi$ som funksjon av temperatur $T$ ved den kritiske temperaturen $T_C$. Ved hjelp av minste kvadraters metode estimerte vi en kritisk temperatur på $T_C = 2.280$.
 
 \end{abstract}
 
@@ -44,9 +44,7 @@ Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjon
 
 \clearpage
 \section{Introduksjon}
-HVA HAR VI GJORT
-Målet med dette prosjektet er å studere faseoverganger i to dimensjoner ved hjelp av den populære Ising modellen. Ved en gitt kritisk temperatur vil denne modellen vise at vi får en faseovergang fra en magnetisk fase til en fase med null magnetisering.
-bla bla
+Målet med dette prosjektet er å studere faseoverganger i to dimensjoner ved hjelp av den populære Ising modellen. Ved en gitt kritisk temperatur vil denne modellen vise at vi får en faseovergang fra en magnetisk fase til en fase med null magnetisering. Vi skal starte med å se på et enkelt og lite system med 2$\times$2 spinn. For et såpass lite system kan vi beregne de ulike termodynamiske størrelsene $\langle E \rangle$, $\langle |M| \rangle$, $C_V$ og $\chi$ analytisk. Ising modellen implementeres så inn i en kode, hvor vi bruker Metropolis algoritmen til å generere nye spinntilstander. På denne måten kan vi beregne de numeriske verdiene, og sammenligne disse med de analytiske løsningene. 
 
 
 
@@ -152,18 +150,18 @@ og susceptibiliteten ved
 
 hvor $\alpha$ = 0 og $\gamma$ = 7/4. I tillegg har vi \textit{korrelasjonslengden} som forventes å være på samme størrelse som gitteravstanden når $T >> T_C$. Siden spinnene blir mer og mer korrelerte når $T$ nærmer seg $T_C$, vil korrelasjonslengden øke i nærheten av den kritiske temperaturen. Siden vi jobber på en datamaskin, vil vi alltid ha en endelig størrelse på gitteret vårt. Det er mulig å skalere slik at vi kan knytte oppførselen til  et endelig gitter med resultatene til et uendelig stort gitter. Den kritiske temperaturen skaleres da som
 
-\[T_C(L) - T_C(L=\infty ) = aL^{-1/\mu}  \]
+\[T_C(L) - T_C(L=\infty ) = aL^{-1/\nu}  \]
 
-hvor $a$ er en konstant og $\mu$ er definert ved ligningen
+hvor $a$ er en konstant og $\nu$ er definert ved ligningen
 
-\[\xi (T) \sim |T_C - T|^{-\mu} \]
+\[\xi (T) \sim |T_C - T|^{-\nu} \]
 
 Ved å sette $T$ = $T_C$ får vi at
-\[ \langle M(T) \rangle \sim (T-T_C)^\beta \rightarrow L^{-\beta/\mu} \]
+\[ \langle M(T) \rangle \sim (T-T_C)^\beta \rightarrow L^{-\beta/\nu} \]
 og
-\[C_V(T) \sim |T_C-T|^{-\gamma} \rightarrow L^{\alpha/\mu} \]
+\[C_V(T) \sim |T_C-T|^{-\gamma} \rightarrow L^{\alpha/\nu} \]
 og
-\[ \chi (T) \sim |T_C - T|^{-\alpha} \rightarrow L^{\gamma / \mu } \]
+\[ \chi (T) \sim |T_C - T|^{-\alpha} \rightarrow L^{\gamma / \nu } \]
 
 \subsection{Metropolis algoritmen}
 For å beregne disse termodynamiske størrelsene på en datamaskin, skal vi bruke Metropolis algoritmen på Ising modellen med periodiske grensebetingelser. Denne algoritmen ble lagt frem av Metropolis mfl. i 1953. Vi kan generere nye tilstander fra den forrige tilstanden ved å bruke en sannsynlighetsmodell som avhenger av energidifferansen mellom tilstandene. I vårt tilfelle er Monte Carlo samplings-funksjonen vår det sammen som sannsynligheten for at systemet befinner seg i en tilstand $s$ gitt ved 
@@ -181,7 +179,7 @@ Siden vi trenger en oversikt over \textit{alle} tilstandene systemet kan ha for 
 \item Dersom differansen $\Delta E = E_2 - E_1 \le 0 $, aksepterer vi den nye konfigurasjonen. Energien er nå lavere enn det den startet med å være. På denne måten beveger vi oss mot et energiminimum.
 \item Dersom differansen $\Delta E > 0$, beregn $w = e^{\beta \Delta E} $, og sammenlign $w$ med et tilfeldig trukket tall, $r$.
 \item Hvis $r \le w$ godtas den nye konfigurasjonen. Hvis ikke beholdes den gamle konfigurasjonen. 
-\item Oppdater de termodynamiske verdiene du vil beregne.
+\item Oppdater de termodynamiske størrelsene du vil beregne.
 \item Når du har gått gjennom hele gitteret har du gått gjennom én Monte Carlo syklus. En slik syklus regnes som én måling. For å få flere målinger må du gå gjennom flere slike sykluser.
 \end{enumerate}
 
@@ -216,14 +214,14 @@ Vi kan sammenligne de analytiske løsningene med de numeriske løsningene funnet
 \FloatBarrier
 \begin{table}[!ht]
 \centering
-\caption{Numeriske vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi systemet vårt med alle spinn pekende oppover og antall Monte Carlo sykluser er $10^7$.}
+\caption{Numeriske vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi systemet vårt med alle spinn pekende oppover og antall Monte Carlo sykluser er $10^5$.}
 \label{num_vs_an_up}
 \begin{tabular}{|l|l|l|}
 \hline
         & Numerisk & Analytisk \\ \hline
-$<E>$   & -7.9842  & -7.9839   \\ \hline
-$<|M|>$ & 3.9948   & 3.9946    \\ \hline
-$C_V$   & 0.1258   & 0.1283    \\ \hline
+$<E>$   & -1.9960  & -1.9960   \\ \hline
+$<|M|>$ & 0.9987   & 0.9987    \\ \hline
+$C_V$   & 0.1267   & 0.1283    \\ \hline
 $\chi$  & 0.0157   & 0.0160    \\ \hline
 \end{tabular}
 \end{table}
@@ -232,36 +230,223 @@ $\chi$  & 0.0157   & 0.0160    \\ \hline
 \FloatBarrier
 \begin{table}[!ht]
 \centering
-\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi med et system hvor de ulike spinnene peker i tilfeldig retning. Antall Monte Carlo sykluser er $10^7$.}
+\caption{Numerisk vs analytiske verdier for ulike termodynamiske størrelser. Her starter vi med et system hvor de ulike spinnene peker i tilfeldig retning. Antall Monte Carlo sykluser er $10^5$.}
 \label{num_vs_an_rand}
 \begin{tabular}{|l|l|l|}
 \hline
         & Numerisk & Analytisk \\ \hline
-$<E>$   & -7.9836  & -7.9839   \\ \hline
-$<|M|>$ & 4.0148   & 3.9946    \\ \hline
-$C_V$   & 0.1306   & 0.1283    \\ \hline
-$\chi$  & 1.0107   & 0.0160    \\ \hline
+$<E>$   & -1.9961  & -1.9960   \\ \hline
+$<|M|>$ & 0.9988   & 0.9987    \\ \hline
+$C_V$   & 0.1258   & 0.1283    \\ \hline
+$\chi$  & 1.0159   & 0.0160    \\ \hline
 \end{tabular}
 \end{table}
 \FloatBarrier
 
+\subsection{20x20-gitter}
+Vi skal nå se nærmere på et gitter med $L$ = 20 spinn i $x$ og $y$ retning. Vi vil studere hvor lang tid det tar før systemet når likevekt. I vårt tilfelle måler vi tid i antall Monte Carlo sykluser. Etter at systemet har nådd likevekt kan vi nemlig begynne å beregne ulike termodynamiske størrelser. Ved å plotte ulike forventningsverdier som funksjon av antall Monte Carlo sykluser kan vi enkelt se på grafen når systemet har begynt å stabiliere seg mot likevekt. Vi starter med å se på et system hvor $T$ = 1.0 hvor alle spinn starter med å peke opp. Deretter ser vi på hva som skjer hvis systemet starter med tilfeldig orienterte spinn. Det samme gjøres så for $T$ = 2.4.
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT1upE.png}
+  \caption{Forventningsverdien til energien, $\langle E \rangle$ som funksjon av antall Monte Carlo sykluser. }
+  \label{e1}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT1upM.png}
+  \caption{ $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser. }
+  \label{m1}
+\end{subfigure}
+\caption{Energien $\langle E \rangle$ og det magnetiske momentet $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser. Her er temperaturen $T$ = 1.0 og initiell konfigurasjon er med alle spinn oppover. Vi ser i at systemet har nådd likevekt etter omkring $10^4$ sykluser. }
+\label{fig:T1up}
+\end{figure}
+\FloatBarrier
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT1randomE.png}
+  \caption{$\langle E \rangle$ som funksjon av antall Monte Carlo sykluser. }
+  \label{e2}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT1randomM.png}
+  \caption{Magnetisk moment $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser. }
+  \label{m2}
+\end{subfigure}
+\caption{Her ser vi energien $\langle E \rangle$ og det magnetiske momentet $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser ved $T$ = 1.0. Her starter spinnene i tilfeldig retning, og systemet begynner å stabilisere seg etter omkring $10^4$ sykluser,  }
+\label{fig:T1rand}
+\end{figure}
+\FloatBarrier
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT24upE.png}
+  \caption{$\langle E \rangle$ som funksjon av antall Monte Carlo sykluser. }
+  \label{e3}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT24upM.png}
+  \caption{Magnetisk moment $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser. }
+  \label{m3}
+\end{subfigure}
+\caption{Her ser vi energien $\langle E \rangle$ og det magnetiske momentet $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser ved $T$ = 2.4. Her starter alle spinnene i grunntilstanden, pekende oppover. Systemet når likevekt etter omkring $10^5$ sykluser.}
+\label{fig:T24up}
+\end{figure}
+\FloatBarrier
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT24randomE.png}
+  \caption{$\langle E \rangle$ som funksjon av antall Monte Carlo sykluser. }
+  \label{e4}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4cT24randomM.png}
+  \caption{ $\langle |M| \rangle$ som funksjon av Monte Carlo sykluser. }
+  \label{m4}
+\end{subfigure}
+\caption{Figurene over viser energien $\langle E \rangle$ og det magnetiske momentet $\langle |M| \rangle$ som funksjon av antall Monte Carlo sykluser ved $T$ = 2.4. Her starter alle spinnene i tilfeldig retning, og systemet når likevekt etter omkring $10^5$ sykluser.}
+\label{fig:T24rand}
+\end{figure}
+\FloatBarrier
+
+I figuren nedenfor vises et plot av antall aksepterte tilstander som funksjon av temperatur.
+
+\FloatBarrier
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.4]{4cMCCe4upAcceptvsT.png}
+ \caption{Antall aksepterte tilstander som funksjon av temperatur. I dette tilfellet startet alle spinn i grunntilstanden.}
+ \label{aksept}
+ \end{figure}
+ \FloatBarrier
+
+\textbf{Sannsynlighetsfordelingen}\\
+Sannsynligheten for at systemet befinner seg i en viss energitilstand $E_i$ kan beregnes ved å telle antall ganger en viss energi dukker opp i beregningen (frekvensen til E). 
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4e_BRUK1.png}
+  \caption{Histogram av sannsynligheten $P(E)$ når $T$ = 1.0.}
+  \label{hist1}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4e_BRUK.png}
+  \caption{ Histogram av sannsynligheten $P(E)$ når $T$ = 2.4. }
+  \label{hist2}
+\end{subfigure}
+\caption{Figurene over viser histogrammer over sannsynligheten for å finne systemet i en energitilstand $E_i$. Histogrammet er normert slik at summen av arealet av alle boksene er 1. Vi ser at i a) har vi totalt tre ulike tilstander, og variansen i energi er $\sigma_E^2$ = 0.000057. I b) har vi fem ulike tilstander. Den stiplede linjen viser oss den best tilpassede Gausskurven, med tilhørende varians $\sigma^2$ = 0.021.  Variansen i energien er $\sigma_E^2$ = 0.020598.}
+\label{fig:P(E)}
+\end{figure}
+\FloatBarrier
+
+\subsection{Faseovergang ved større gittere}
+Vi skal nå se på hvordan Ising modellen oppfører seg i nærheten av den kritiske temperaturen $T_C$, som funksjon av gitterstørrelsen $L\times L$. Vi plotter derfor $\langle E \rangle$, $\langle |M| \rangle$, $C_V$ og $\chi$ som funksjon av $T$ når $T \epsilon [2.0, 2.3]$. Dette gjøres for $L$ = 40, $L$ = 60, $L$ = 100 og $L$ = 140. Med såpass store gittere var det gunstig å parallellisere koden og å bruke optimaliseringsflagg ved kompilering. Ved $L$ = 40 får vi allerede en markant forskjell i CPU-tid.
+\[CPU-tid \quad uparallellisert \quad kode: 2 min, 28 sek \]
+\[CPU-tid \quad parallellisert \quad kode: 16.19  sek  \]
+
+I figurene nedenfor er de ulike termodynamiske størrelsene plottet som funksjon av $T$ i intervallet $T \epsilon [2.2, 2.3]$ med $\Delta T $ = 0.001 og $10^5$ sykluser. For å unngå hakkete grafer er det brukt interpolasjon i plottefunksjonen.
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4eE.png}
+  \caption{$\langle E \rangle$ som funksjon av $T$.}
+  \label{hist1}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4eM.png}
+  \caption{ $\langle |M| \rangle$ som funksjon av $T$. }
+  \label{hist2}
+\end{subfigure}
+\caption{ Her ser vi $\langle E \rangle$ og $\langle |M| \rangle$ som funksjon av temperatur for ulike gitterstørrelser $L$. Når $L$ øker ser vi at  $\langle E \rangle$ øker, mens $\langle |M| \rangle$ synker. Dette blir tydeligere jo høyere $T$ vi har.   }
+\label{klaks1}
+\end{figure}
+\FloatBarrier
+
+\FloatBarrier
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4eCV.png}
+  \caption{Spesifikk varmekapasitet $C_V$ som funksjon av $T$.}
+  \label{hist1}
+\end{subfigure}%
+\begin{subfigure}{.55\textwidth}
+  \centering
+  \includegraphics[width=1.1\linewidth]{4eX.png}
+  \caption{Susceptibiliteten $\chi$ som funksjon av $T$. }
+  \label{hist2}
+\end{subfigure}
+\caption{$C_V$ og $\chi$ som funksjon av $T$. Vi ser at jo større $L$ er, jo høyere spesifikk varmekapasitet har vi. Uansett størrelse på $L$ ser vi at $C_V$ har en bratt stigning ved økende $T$-verdier, med toppunkt omkring $T \approx2.28$. I b) ser vi grafen til $\chi$, av en eller annen grunn ville ikke denne la seg interpolere. Det går fortsatt ann å skimte et mønster her; jo større $L$, jo høyere susceptibilitet.   }
+\label{klaks2}
+\end{figure}
+\FloatBarrier
+
+\textbf{Nærmere bestemmelse av $T_C$}\\
+Vi kan bruke ligningen 
+\[T_C = T_C(L=\infty) = aL^{-1/\nu} \]
+til å finne et bedre estimat av den kritiske temperaturen $T_C$ ved den termodynamiske grenseverdien $L \rightarrow \infty$. Vi bruker da at $\nu = 1$. Ved å se på resultatene fra simuleringene når $L$ = 40, $L$ = 60, $L$ = 100 og $L$ = 140. Vi kan altså linke den kritiske temperaturen $T_C$ til et gitter med endelig $L$ sammen med den kritiske temperaturen for et \textit{uendelig} gitter. Siden vi allerede har simulert systemet for fire ulike gitterstørrelser, har vi allerede fire punkter vi kan bruke. Vi velger å se på toppunktet i grafen til $C_V$ for de ulike gitterstørrelsene og bruker disse til å lage en lineærtilpasning ved minste kvadraters metode. Figur \ref{TC} viser resultatet. Ved å plotte $C_{V, max}$ mot 1/L ser vi at $T_C(\infty)$ vil ligge i skjæringspunktet med y-aksen, da lineærtilpasningen vil være på formen $T_C(L) = a(1/L) + T_C(\infty)$. Vi ender da opp med at $T_C(L=\infty)$ = 2.280. 
+
+\FloatBarrier
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.5]{4fTC.png}
+ \caption{Lineærtilpasning av de fire ulike maksimumsverdiene til $C_V$, ett punkt for hver gitterstørrelse $L$. Dette gir oss et estimat på $T_C = 2.280$. }
+ \label{TC}
+ \end{figure}
+ \FloatBarrier
+
+Den eksakte verdien for den kritiske temperaturen er funnet (etter Lars Onsager) til å være 
+\[kT_C/J = \frac{2}{ln(1 + \sqrt{2})} \approx 2.269 \] 
+når $\nu$ = 1.
 
 
-\section{Diskusjon}
-I tabellene \ref{num_vs_an_up} og \ref{num_vs_an_rand} for 2$\times$2 tilfellet ser vi at de numerisk beregnede verdiene stemmer godt overens med de analytiske løsningene. 
-$\chi$ var den verdien som krevde flest Monte Carlo sykluser. 
+\section{Diskusjon og konklusjon}
+I tabell  \ref{num_vs_an_up} ser vi de numerisk beregnede verdiene sammen med de analytiske løsningene. Vi har her startet med alle spinn pekende oppover, og for å få en overensstemmelse på \textit{to} desimaler trengte vi $10^5$ Monte Carlo Sykluser. Ved $10^4$ sykluser hadde vi allerede god overenstemmelse for energien $\langle E \rangle$ og det magnetiske momentet $\langle |M| \rangle$. Dersom vi starter systemet med spinn pekende tilfeldig opp eller ned, ser vi av tabell \ref{num_vs_an_rand} at vi her også trengte $10^5$  Monte Carlo sykluser for å få like god overensetemmelse. I begge tilfellene var det altså $C_V$ og $\chi$ som krevde flest Monte Carlo sykluser. Dersom antall sykluser er for lavt (størrelsesorden 10 eller $10^2$) vil disse verdiene bare være null. Det kommer av at systemet ikke har nådd sin likeveksttilstand ved et lavt antall sykluser, men heller befinner seg nærmere sin initielle tilstand. Sannsynligheten for at et spinn skal flippe er altså liten ved små syklusantall. Vi sett at vi trenger opp mot $10^5$ sykluser for å få en overenstemmele på to desimaler med de analytiske løsningene. \\
 
+Når vi går over til 20$\times$20 tilfellet blir det litt værre å finne de analytiske løsningene. Vi har derfor plottet forventningsverdien til energien $\langle E \rangle$  og det magnetiske momentet $\langle |M| \rangle$ som funksjon av antall Monte Carlo sykluser. Ved å se på grafene kan man danne seg et bilde på hvor lang tid systemet vil bruke på å nå likevektstilstand ved ulike temperaturer og initialkonfigurasjoner. Vi måler altså tid i antall sykluser. Vi starter med å se på  tilfellet hvor $T$ = 1.0 og initialkonfigurasjonen er grunntilstanden med alle spinn pekende oppover (figur \ref{fig:T1up}). Systemet starter med å oscillere omkring likevektslinja, før det begynner å stabilisere seg etter $10^3$ sykluser, selv om vi fortsatt har noen ustabiliteter. Etter $10^5$ sykluser kan man trygt si at systemet har nådd likevekt; her er grafen ganske stabil og ligner en rett linje. I figur \ref{fig:T1rand} ser vi hvordan systemet utvikler seg ved en tilfeldig startkonfigurasjon. Startfasen her er annerledes; systemet beveger seg bestemt mot likevekt, uten noen store oscillasjoner forbi likevektslinja. Etter omtrent $10^4$ sykluser ser vi at systemet har stabilisert seg i ekvilibrium. Vi ser at begge tilfellene beveger seg mot $\langle E \rangle \approx$ -1.99 og $\langle |M| \rangle \approx $ 0.99. Dette gir mening, siden startkonfigurasjonen ikke skal ha noe å si for systemets oppførsel i det lange løp.
 
+Når vi øker temperaturen til $T$ = 2.4, vil systeme oppføre seg noe annerledes. Vi starter med å se på tilfellet med grunntilstanden som startkonfigurasjon. Likevekt er oppnådd etter omtrent $10^5$ sykluser, akkurat som ved $T$ = 1.0, men oppførselen i starten er annerledes. Her beveger systemet seg målrettet mot likevektslinja. Det samme gjelder når vi har en tilfeldig startkonfigurasjon, med likevekt etter $10^5$ sykluser. $T$ = 2.4 ser vi at systemet vil gå mot $\langle E \rangle \approx$ -1.23 og $\langle |M| \rangle \approx $ 0.45. \\
 
-\subsection{Optimalisering av kode}
--O3 ved kompilering. 
-Vektorisering ved -Rpass=loop-vectorize
-parallellisering av koden.
-Interpolasjon av grafenei python.
+Ut ifra grafene i figur \ref{fig:T1rand}, \ref{fig:T1up}, \ref{fig:T24up} og \ref{fig:T24rand} kan vi konkludere med at systemet etter $10^5$ har nådd likevekt og at vi etter dette kan beregne de ulike termodynamiske størrelsene. I figur \ref{aksept} ser vi at antallet aksepterte tilstander er lavt ved lave temperaturer. Antallet begynner deretter å øke tilnærmet eksponentielt frem til $T \approx $ 2.4, før veksten begynner å avta igjen. Vi har alså færre spinn flipp ved lavere temperaturer. Dette kommer av at vi i Metropolis algoritmen sammenligner et tilfeldig generert tall med faktoren $exp(-\Delta E/T)$, slik at når $T$ blir mindre vil færre nye tilstander aksepteres.\\
 
-Dersom vi sammenligner de numeriske verdiene i tabell \ref{num_vs_an} og \ref{num_vs_an}, ser vi at når vi starter med et ordnet system hvor alle spinn peker opp, vil vi også komme nærmere de analytiske verdiene., jo lenger unna det analytiske svaret kommer vi. 
+Figur \ref{fig:P(E)} viser oss sannsynlighetsfordelingen for at systemet befinner seg i en bestemt energitilstand $E$. Vi ser at ved $T$ = 1.0, har vi \textit{tre} ulike energitilstander; -1.98, -1.96 og -2.00. Sannsynlighetsfordelingen her er ikke en typisk normalfordeling. Her ser vi at mesteparten av tilstandene har energien -2.00. Det var derfor vanskelig å finne en Gauss kurve som passet til denne fordelingen. Likevel får vi et overraskende godt resultat når vil prøver å tilpasse denne fordelingen med en Gauss kurve. Det kan komme av at histogrammet vårt kun dekker den ene halvdelen av Gauss kurven. Variansen $\sigma^2$ er jo standardavviket kvadrert, og standardavviket forteller om når spredningen av verdiene i datasettet vårt. Vi vet at i en normalfordeling vil 68.27$\%$ av datasettet befinne seg under ett standardavvik fra gjennomsnittsverdien. Den beregnede variansen $\sigma_E^2$ = 0.000057 passer derfor godt med denne Gauss kurvens varians $\sigma^2$ = 0.000057378. 
 
-\section{Konklusjon}
+Når $T$ = 2.4 ser vi at vi har \textit{fem} ulike energitilstander. Sannsynlighetsfordelingen her ligner mer på en normalfordeling, og vi ser at $\sigma_E^2$ = 0.020598 og $\sigma^2$ = 0.021 stemmer godt overens med hverandre. Etter å ha studert figur \ref{fig:P(E)} kan vi derfor konkludere med at sannsynlighetsfordelingen er normalfordelt!\\
+
+Over til de litt større systemene. Her er det nødvendig med en parallellisert kode, med mindre man har ekstremt god tid. Når vi kjører en uparallellisert kode med $L$ = 40, $T \epsilon [2.1, 2.3]$ og $\Delta T$ = 0.005 og $10^4$ sykluser, endte vi med en CPU-tid på  2 min og 28 sek. Kjører vi en parallellisert kode med samme parametere, ble CPU-tiden 16.19 sek ved bruk av fire prosessorer. Det er altså en tydelig forskjell i tidsbruk, og det er klart at for større gittere og et høyere antall sykluser vil forskjellene bli enda større. For å optimalisere ytterligere, ble det brukt kompleringsflagg(-O3). \\
+
+Ser vi nærmere på figur \ref{klaks1} og \ref{klaks2}, ser vi flere tegn på at systemet her gjennomgår en faseovergang. Typiske tegn er en bratt stigning i $\langle E \rangle$, mens $\langle |M| \rangle$ synker brått. Andre tegn er at den spesifikke varmekapasiteten har toppunkt (omkring $T$ = 2.28), samtidig som at $\chi$ er økende. Dersom vi hadde simulert for et større intervall kunne vi sett at $\chi$ vil nærme seg et toppunkt for så å begynne å synke igjen. Disse toppunktene blir tydeligere jo større $L$ er. Alt dette indikerer at systemet gjennomgår en faseovergang. Ut ifra grafene i figur \ref{klaks2} er det mulig å gjøre et estimat av den kritiske temperaturen $T_C$, som vil ligge i toppunktet til disse grafene. Med dette kan vi anslå at $T_C \approx 2.28$.
+
+Til slutt ser vi på estimeringen av den kritiske temperaturen. Ved bruk av minste kvadraters metode kom vi frem til at $T_C$ = 2.280, mens den eksakte løsningen er $T_C$ = 2.269. Avviket vårt kan komme av at vi ikke hadde mange nok punkter å lage en lineærtilpasning ut ifra. Dersom vi hadde simulert for flere forskjellige gitterstørrelser, ville vi også fått flere toppunkter og dermed flere punkter å lage en lineærtilpasning ut ifra. Hvis vi i tillegg hadde økt temperaturintervallet ville vi muligens fått med oss toppunktene i grafen til $\chi$ slik at vi kunne laget en lineærtilpasning ut ifra disse også, for sammenligning. \\
+
+Kort oppsummert kan vi konkludere med at Metropolis algoritmen egner seg godt for simulering av spinn-gitter som undergår en faseovergang beskrevet ved Ising modellen. Jo større gitter vi har, jo mer realistisk blir resultatene vi får. Alle de fysiske størrelsene har oppført seg som forventet ved den kritiske temperaturen. Vi har i tillegg klart å estimere den kritiske temperaturen ved hjelp resultatene vi har fått fra denne modellen. Det viste seg at denne verdien $T_C = 2.280$ lå ganske nær den eksakte løsningen $T_C = 2.269$. Ved å bruke en parallellisert kode klarte vi å komme gjennom simuleringene innenfor rimelig tid, og det viste seg svært nyttig når vi skulle simulere  systemer med 140$\times$ 140 spinn.
+
 
 \section{Vedlegg}
 Alle koder og resultater som er brukt i rapporten finnes på Github-adressen: \\
@@ -286,7 +471,7 @@ https://github.com/livewj/Project4
   doc/Programs/ParallelizationMPI>, 14.11.16
   
 \bibitem{}
-  Deler av koden i \texttt{ParaIsingModel.cpp} er hentet fra \\ <https://github.com/henrisro/Project4$\_$v2/blob/master/Parallellization$\%$20attempt/IsingMPI.cpp>,
+  Deler av koden i \texttt{ParaIsingModel.cpp}, samt koden brukt til å estimere $T_C$, er hentet fra \\ <https://github.com/henrisro/Project4>,
   14.11.16
 
 \bibitem{}
@@ -297,6 +482,9 @@ https://github.com/livewj/Project4
   Potenslov:
  <https://no.wikipedia.org/wiki/Potenslov>, 14.11.16
 
+\bibitem{}
+ Standardavvik:
+ <https://no.wikipedia.org/wiki/Standardavvik>, 15.11.16
    
 \end{thebibliography}
 \end{document}
