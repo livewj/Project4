@@ -36,7 +36,7 @@
 \maketitle
 
 \begin{abstract}
-Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjonal kvadratisk gitter. Denne modellen beskriver et magnetisk materiale, og vi har forenklet modellen ved å bruke et system som består av partikler, som vi antar er festet i et gitter. Disse partiklene kan enten ha spinn opp eller spinn ned, og kan vekselvirke med hverandre ved å endre spinntilstand. Vi har brukt Metropolis algoritmen for å beregne sannsynlighetstettheten til de ulike tilstandene (?) under en Monte Carlo simulering. Vi har sett på de termodynamiske parameterene, som energi $E$, gjennomsnittsmagnetisering $\mathcal{M}$, spesifikk varmekapasitet $C_V$ og susceptibiliteten $\chi$ som funksjon av temperatur $T$ ved den kritiske temperaturen $T_C$. KONKRETE TALL
+Målet med dette prosjektet er å implementere Ising modellen for et 2-dimensjonal kvadratisk gitter. Denne modellen beskriver et magnetisk materiale, og vi har forenklet modellen ved å bruke et system som består av partikler, som vi antar er festet i et gitter. Disse partiklene kan enten ha spinn opp eller spinn ned, og kan vekselvirke med hverandre ved å endre spinntilstand. Vi har brukt Metropolis algoritmen for å beregne sannsynlighetstettheten til de ulike tilstandene (?) under en Monte Carlo simulering. Vi har sett på de termodynamiske parameterene, som energi $E$, magnetisk moment $M$, spesifikk varmekapasitet $C_V$ og susceptibiliteten $\chi$ som funksjon av temperatur $T$ ved den kritiske temperaturen $T_C$. KONKRETE TALL
 
 \end{abstract}
 
@@ -55,35 +55,145 @@ Ising modellen gjør oss i stand til å beskrive oppførselen til et magnetisk m
 \begin{equation}
 E = -J\sum_{<kl>}^N s_ks_l - \mathcal{ B} \sum_k^N s_k
 \end{equation}
-hvor $s_k = \pm 1$. Størrelsen $N$ representerer det totale antlall spinn vi kan ha, mens $J$ er koblingskonstanten som forteller oss noe om styrken på vekselvirkningen mellom to nabospinn. Symbolet $<kl>$ indikerer at vi kun skal summere over de nærmeste naboene. I vårt tilfelle har vi ikke noe ytre magnetfelt $\mathcal{B}$, slik at det siste leddet forsvinner. Vi antar at vi har en ferromagnetisk struktur, slik at $J \>$ 0. Vi kommer til å bruke periodiske grensebetingelser og \textbf{Metropolisalgoritmen} til å modellere vårt system. \\
+hvor $s_k = \pm 1$. Størrelsen $N$ representerer det totale antlall spinn vi kan ha, mens $J$ er koblingskonstanten som forteller oss noe om styrken på vekselvirkningen mellom to nabospinn. Symbolet $<kl>$ indikerer at vi kun skal summere over de nærmeste naboene. I vårt tilfelle har vi ikke noe ytre magnetfelt $\mathcal{B}$, slik at det siste leddet forsvinner. Vi antar at vi har en ferromagnetisk struktur, slik at $J >$ 0. I vårt tilfelle bruker vi $J$ = 1. Vi kommer til å bruke periodiske grensebetingelser og \textbf{Metropolisalgoritmen} til å modellere vårt system. \\
 
-For et kanonisk system er \textbf{partisjonsfunksjonen} gitt ved
+For å kunne beregne forventningsverdier som for eksempel forventningsverdien til energien $\langle E \rangle$ eller magnetiseringen $\langle M \rangle$ i statistisk fysikk, trenger vi sannsynlighetsfordelingen, som forteller oss om sannsynligheten for å finne systemet vårt i en gitt konfigurasjon $i$:
+
+\begin{equation}
+P_i(\beta) = \frac{e^{-\beta E_i}}{Z}
+\end{equation}
+
+hvor $\beta = 1/kT$, $k$ er Boltzmanns konstant og $E_i$ er energien til tilstand nummer $i$. $Z$ er partisjonsfunksjonen for et kanonisk ensemble. Det betyr at ($N,V,T$) (antall spinn, volum og temperatur) holdes konstant. $Z$ er da gitt ved
 \begin{equation}
 Z = \sum_{i=1}^M e^{-\beta E_i }
 \end{equation}
-hvor $\beta = 1/kT$, $k$ er Boltzmanns konstant og $E_i$ er energien til tilstand nummer $i$. Her summerer vi over alle mulige mikrotilstander $M$.\\
-I tillegg har vi at \textbf{magnetiseringen} er gitt ved
+Her summerer vi over alle mulige mikrotilstander $M$. Energien til hver enkelt konfigurasjon $i$ er gitt ved
 \begin{equation}
-\mathcal{M} = \sum_{j=1} ^N s_j
+E_i = -J\sum_{<kl>}^N s_k s_l
 \end{equation}
-mens den \textbf{spesifikke varmekapasiteten} er
+
+En gitt konfigurasjon i en endimensjonal Ising Modell hvor $\mathcal{B}$ = 0 med $N$ spinn kan for eksempel se slik ut
+
+\[\uparrow_1 \quad \uparrow_2 \quad  ... \quad \uparrow_{i-1}  \quad \downarrow_i  \quad \downarrow_{i+1} \quad ...\quad \uparrow_{N-1} \quad \downarrow_N \]
+
+hvor pilene symboliserer om spinnet peker opp (+1) eller ned (-1). Det finnes flere måter å håndtere grensebetingelsene på. Vi skal bruke \textbf{periodiske grensebetingelser}. Det betyr at nabospinnet til høyre for spinn $s_N$, skal ha samme verdi som spinn $s_1$. På samme måte skal naboen til venstre for $s_1$ ha samme verdi som $s_N$. \\
+
+Det \textbf{magnetiske momentet} i et slik system er definert ved 
+\begin{equation}
+M = \sum_{j=1} ^N s_j
+\end{equation}
+hvor vi summer over alle spinn ved en gitt konfigurasjon $i$. I det endimensjonale tilfellet vil hvert spinn kun ha to naboer; en til høyre og en til venstre. Tar vi dette over til det todimensjonale plan, får hvert spinn plutselig fire naboer. Dersom vi ser på et 2$\times$2-gitter med periodiske grensebetingelser, ender vi opp med totalt $2^4$ = 16 ulike tilstander. Noen eksempler er gitt nedenfor:
+
+\[ \uparrow \uparrow \quad \quad \uparrow \uparrow \quad \quad \downarrow \downarrow \quad \quad \downarrow \downarrow \]
+
+\[ \uparrow \uparrow \quad \quad \uparrow \downarrow \quad \quad \uparrow \downarrow \quad \quad \downarrow \downarrow \]
+
+\[ E = -8J \quad \quad E = 0 \quad \quad E = 0 \quad \quad E = -8J \]
+
+Vi ser fort at det er flere ulike tilstander som har samme totalenergi. Antall tilstander som har samme totalenergi kalles for \textit{degenerasjonsgraden} til energien. Tabell \ref{degen}  gir en oversikt over de ulike tilstandenes energi, magnetisk moment og degerasjonsgrad for 2$\times$2 tilfellet.
+
+\FloatBarrier
+\begin{table}[!ht]
+\centering
+\caption{Energi og magnetisk moment for den todimensjonale Ising modellen, med N = 2$\times$2 spinn og periodiske grensebetingeler.}
+\label{degen}
+\begin{tabular}{llll}
+\#Spinn opp & Degenerasjonsgrad & Energi & Magnetisk moment \\
+4           & 1                 & -8J    & 4             \\
+3           & 4                 & 0      & 2             \\
+2           & 4                 & 0      & 0             \\
+2           & 2                 & 8J     & 0             \\
+1           & 4                 & 0      & -2            \\
+0           & 1                 & -8J    & -4           
+\end{tabular}
+\end{table}
+\FloatBarrier
+
+Videre har vi at forventningsverdien til energien er 
+\begin{equation}
+\langle E \rangle = - \frac{\partial lnZ}{\partial \beta} 
+\end{equation}
+
+mens forventningsverdien til \textit{absoluttverdien} til det magnetiske momentet blir
+\begin{equation}
+\langle |M| \rangle = \frac{1}{Z} \sum_i^M |M_i| e^{-\beta E_i}
+\end{equation}
+hvor $M_i$ er det magnetiske momentet ved tilstanden $i$.
+
+
+Den \textbf{spesifikke varmekapasiteten} er gitt ved
 \begin{equation}
 C_V = \frac{1}{kT^2}\sigma_E^2 = \frac{1}{kT^2}(\langle E^2 \rangle - \langle E \rangle^2 )
 \end{equation}
+
+hvor 
+\begin{equation}
+\langle E^2 \rangle = \frac{1}{Z} \sum_i E_i^2 e^{- \beta E_i}
+\end{equation}
+
 \textbf{Susceptibiliteten} er gitt ved
 \begin{equation}
-\chi = \frac{1}{kT} \sigma_{|\mathcal{M}|}^2 = \frac{1}{kT}( \langle \mathcal{|M|}^2 \rangle - \langle |\mathcal{M}| \rangle^2 )
+\chi = \frac{1}{kT} \sigma_{|M|}^2 = \frac{1}{kT}( \langle |M|^2 \rangle - \langle |M| \rangle^2 )
 \end{equation}
-hvor $|\mathcal{M} |$ er absoluttverdien av magnetiseringen $|\mathcal{M} |$.
+hvor $|M |$ er absoluttverdien av det magnetiske momentet $M$.
 
-\subsection{Ising modellen}
-kap 13
+\subsection{Faseoverganger}
+Nær den kritiske temperaturen $T_C$ kan vi beskrive mange av de termodynamiske størrelsene ved hjelp av en såkale potenslov. Dette er en egenskap som innebærer at frekvensen av en størrelses verdi er eksponensiell avtagende med den gjeldende verdien. For Ising modellen kan forventningsverdien til det magnetiske momentet beskvrives ved
+
+\[ \langle M(T) \rangle \sim (T - T_C)^\beta \]
+
+hvor $\beta$=1/8 er en såkalt \textit{kritisk eksponent}. Tilsvarende kan vi beskrive varmekapasiteten ved
+
+\[ C_V \sim |T_C - T|^\alpha \]
+
+og susceptibiliteten ved
+
+\[ \chi(T) \sim |T_C - T|^\gamma  \]
+
+hvor $\alpha$ = 0 og $\gamma$ = 7/4. I tillegg har vi \textit{korrelasjonslengden} som forventes å være på samme størrelse som gitteravstanden når $T >> T_C$. Siden spinnene blir mer og mer korrelerte når $T$ nærmer seg $T_C$, vil korrelasjonslengden øke i nærheten av den kritiske temperaturen. Siden vi jobber på en datamaskin, vil vi alltid ha en endelig størrelse på gitteret vårt. Det er mulig å skalere slik at vi kan knytte oppførselen til  et endelig gitter med resultatene til et uendelig stort gitter. Den kritiske temperaturen skaleres da som
+
+\[T_C(L) - T_C(L=\infty ) = aL^{-1/\mu}  \]
+
+hvor $a$ er en konstant og $\mu$ er definert ved ligningen
+
+\[\xi (T) \sim |T_C - T|^{-\mu} \]
+
+Ved å sette $T$ = $T_C$ får vi at
+\[ \langle M(T) \rangle \sim (T-T_C)^\beta \rightarrow L^{-\beta/\mu} \]
+og
+\[C_V(T) \sim |T_C-T|^{-\gamma} \rightarrow L^{\alpha/\mu} \]
+og
+\[ \chi (T) \sim |T_C - T|^{-\alpha} \rightarrow L^{\gamma / \mu } \]
+
 \subsection{Metropolis algoritmen}
-kap 12
+Vi skal bruke Metropolis algoritmen til å simulere spinn-flippingen i vårt system. Kort fortalt går den ut på at vi
+
 
 \section{Resultater}
 \subsection{2x2-gitter}
-Vi starter med å se på et enkelt todimensjonalt system, nemlig et 2$\times$ 2 gitter. I tabell \ref{num_vs_an} ser vi resultatene fra en kjøring av programmet \texttt{IsingModel$\_$4a.cpp}. Her er temperaturen $T$ = 1.0, og antall Monte Carlo sykluser $10^7$. Med disse verdiene oppnådde vi en presisjon på ett desimal. Her starter vi systemet med alle spinn pekende opp.
+\textbf{Analytiske løsninger}\\
+Vi starter med å se på et enkelt todimensjonalt system, nemlig et 2$\times$ 2 gitter. Partisjonsfunksjonen for et 2$\times$2-gitter kan finnes ved ligning (3). Dersom vi bruker verdiene gitt i tabell \ref{degen}, får vi at 
+\[ Z = \sum_{i=1}^{16} e^{-\beta E_i} = e^{-\beta(-8J)} + 2e^{-\beta(8J)} + e^{- \beta(-8J)} + 12e^{-\beta(0)} \]
+\[ = 2e^{8\beta J} + 2e^{-8 \beta J} + 12  \]
+
+Videre kan vi finne $\langle E \rangle$ ved å bruke ligning (6), slik at 
+
+\[\langle E \rangle = - \frac{\partial}{\partial \beta} \left[ ln(2e^{8\beta J} + 2e^{-8 \beta J} + 12) \right] \]
+\[ = - \frac{16Je^{8\beta J} - 16Je^{-8\beta J}}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } \]
+
+Ligning (7) brukes til å finne forventningsverdien til systemets magnetiske moment $\langle |M| \rangle$ og vi får
+\[ \langle |M| \rangle  = \frac{1}{2e^{8\beta J} + 2e^{-8 \beta J} + 12} \cdot (4e^{-\beta(-8J)} + 4\cdot 2 \cdot e^0 + 4\cdot 2 \cdot e^0 + | - 4|e^{-\beta(-8J)} )\]
+\[ = \frac{8e^{8\beta J} + 16}{2e^{8\beta J} + 2e^{-8 \beta J} + 12} \]
+
+Den spesifikke varmekapasiteten er gitt ved (8) og vi ender opp med
+\[C_V = \frac{1}{kT^2}\left(\langle E^2 \rangle - \langle E \rangle^2 \right) = \frac{1}{kT^2}\left[ \frac{2\cdot 64J^2 (e^{8\beta J} + e^{-8\beta J})}{2e^{8\beta J} + 2e^{-8 \beta J} + 12} - \left( - \frac{16Je^{8\beta J} - 16Je^{-8\beta J}}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } \right)^2 \right]  \]
+
+Til slutt har vi susceptibiliteten gitt ved ligning (10)
+\[ \chi = \frac{1}{kT} (\langle |M|^2 \rangle - \langle |M| \rangle ^2 ) = \frac{1}{kT} \left[ \frac{32e^{8\beta J} + 32}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } - \left( \frac{8e^{8\beta J} + 16}{2e^{8\beta J} + 2e^{-8 \beta J} + 12 } \right)^2 \right]  \]
+
+\textbf{Numeriske løsninger}\\
+
+ I tabell \ref{num_vs_an} ser vi resultatene fra en kjøring av programmet \texttt{IsingModel$\_$4a.cpp}. Her er temperaturen $T$ = 1.0, og antall Monte Carlo sykluser $10^7$. Med disse verdiene oppnådde vi en presisjon på ett desimal. Her starter vi systemet med alle spinn pekende opp.
 
 \FloatBarrier
 \begin{table}[!ht]
@@ -120,34 +230,49 @@ $\chi$  & 1.0107   & 0.0160    \\ \hline
 
 
 \section{Diskusjon}
+\subsection{Optimalisering av kode}
+-O3 ved kompilering. 
+Vektorisering ved -Rpass=loop-vectorize
+parallellisering av koden.
+Interpolasjon av grafenei python.
+
 Dersom vi sammenligner de numeriske verdiene i tabell \ref{num_vs_an} og \ref{num_vs_an}, ser vi at når vi starter med et ordnet system hvor alle spinn peker opp, vil vi også komme nærmere de analytiske verdiene., jo lenger unna det analytiske svaret kommer vi. 
 
 \section{Konklusjon}
 
 \section{Vedlegg}
 Alle koder og resultater som er brukt i rapporten finnes på Github-adressen: \\
-https://github.com/livewj/PROJ3
+https://github.com/livewj/Project4
 
 
 \bibliography{Referanser}
 \begin{thebibliography}{9}  
-
-\bibitem{}
-  Kursets offisielle Github-side $\textit{FYS3150 - Computational Physics}$
-  https://github.com/CompPhysics/ComputationalPhysics,
-  29.10.2016  
     
 \bibitem{}
    M. Hjort-Jensen: Computational physics, lecture notes 2015. Fysisk institutt, UiO, 2016.
 
 \bibitem{}
    Oppgavetekst: Project 4, Fysisk institutt, UiO, 29.10.16
-    
+   
+ \bibitem{}
+   Termodynamiske uttrykk: "Energy Fluctuations in the Canonical Ensemble", Nick Oulette. <https://www.sccs.swarthmore.edu/users/02/no/pdfs/fluct.pdf>, 14.11.16
+  
+  \bibitem{}
+  Utgangspunktet for kodene \texttt{IsingModel.cpp} og \texttt{ParaIsingModel.cpp} er hentet fra kursets Github-side:
+  <https://github.com/CompPhysics/ComputationalPhysics/tree/master/\\
+  doc/Programs/ParallelizationMPI>, 14.11.16
+  
 \bibitem{}
-  Slides fra kursets offisielle nettside
-  "Ordinary differential equations":
-  http://compphysics.github.io/ComputationalPhysics/doc/pub/ode/pdf/ode-beamer.pdf, 21.10.16
+  Deler av koden i \texttt{ParaIsingModel.cpp} er hentet fra \\ <https://github.com/henrisro/Project4$\_$v2/blob/master/Parallellization$\%$20attempt/IsingMPI.cpp>,
+  14.11.16
 
+\bibitem{}
+ Tips og triks for optimalisering av kode:
+ "How to optimize codes, from vectorization to parallelization", Morten Hjorth-Jensen, Fysisk Institutt, UiO, 2016.
+ 
+\bibitem{}
+  Potenslov:
+ <https://no.wikipedia.org/wiki/Potenslov>, 14.11.16
 
    
 \end{thebibliography}
